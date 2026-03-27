@@ -1,9 +1,9 @@
 {
 	"name": "@kirimemail/n8n-nodes-transactional",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Kirim.Email transactional email nodes for n8n - send emails and receive webhooks",
 	"license": "MIT",
-	"homepage": "https://smtp-app.kirim.email",
+	"homepage": "https://kirim.email",
 	"keywords": [
 		"n8n-community-node-package",
 		"kirimemail",
