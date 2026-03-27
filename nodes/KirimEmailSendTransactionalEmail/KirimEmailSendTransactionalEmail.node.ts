@@ -8,7 +8,7 @@ import { NodeConnectionTypes, ApplicationError } from 'n8n-workflow';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import FormData = require('form-data');
 
-export class KirimEmailTransactional implements INodeType {
+export class KirimEmailSendTransactionalEmail implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'KirimEmail Send Transactional Email',
 		name: 'kirimEmailSendTransactionalEmail',
