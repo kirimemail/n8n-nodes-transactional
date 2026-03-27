@@ -24,7 +24,7 @@
 		"url": "https://github.com/kirimemail/n8n-nodes-transactional/issues"
 	},
 	"scripts": {
-		"build": "n8n-node build && npm run copy-assets",
+		"build": "n8n-node build",
 		"copy-assets": "cp -r assets dist/nodes/KirimEmailTransactional/ && cp -r assets dist/nodes/KirimEmailTrigger/ && cp -r assets dist/credentials/",
 		"build:watch": "tsc --watch",
 		"dev": "n8n-node dev",

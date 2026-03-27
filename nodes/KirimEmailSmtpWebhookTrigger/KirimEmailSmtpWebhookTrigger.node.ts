@@ -11,7 +11,7 @@ import { createHmac } from 'crypto';
 export class KirimEmailTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'KirimEmail SMTP Webhook Trigger',
-		name: 'kirimEmailSMTPWebhookTrigger',
+		name: 'kirimEmailSmtpWebhookTrigger',
 		icon: { light: 'file:assets/logo-bg-white.svg', dark: 'file:assets/logo-bg-black.svg' },
 		group: ['trigger'],
 		version: 1,
@@ -31,7 +31,7 @@ export class KirimEmailTrigger implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
-				name: 'kirimEmailApi',
+				name: 'kirimEmailSmtpDomainApi',
 				required: true,
 			},
 		],

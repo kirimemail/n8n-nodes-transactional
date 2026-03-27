@@ -27,7 +27,7 @@ export class KirimEmailTransactional implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
-				name: 'kirimEmailApi',
+				name: 'kirimEmailSmtpDomainApi',
 				required: true,
 			},
 		],
