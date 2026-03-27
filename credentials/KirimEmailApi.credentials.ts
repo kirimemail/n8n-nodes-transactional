@@ -6,8 +6,8 @@ import type {
 } from 'n8n-workflow';
 
 export class KirimEmailApi implements ICredentialType {
-	name = 'kirimEmailApi';
-	displayName = 'KirimEmail API';
+	name = 'kirimEmailSmtpDomainApi';
+	displayName = 'KirimEmail SMTP Domain API';
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	icon = 'file:assets/logo-bg-black.svg' as any;
 	documentationUrl = 'https://smtp-app.kirim.email/docs';
@@ -40,6 +40,15 @@ export class KirimEmailApi implements ICredentialType {
 			placeholder: 'example.id',
 			description:
 				'Domain name for header authentication. Must match the domain associated with the API key.',
+		},
+		{
+			displayName: 'Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://smtp-app.kirim.email',
+			placeholder: 'https://smtp-app.kirim.email',
+			description:
+				'API base URL. Defaults to KirimEmail SMTP API. Do not change unless you know what you are doing.',
 		},
 	];
 

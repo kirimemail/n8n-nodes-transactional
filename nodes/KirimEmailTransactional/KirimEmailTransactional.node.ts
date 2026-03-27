@@ -10,8 +10,8 @@ import FormData = require('form-data');
 
 export class KirimEmailTransactional implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'KirimEmail Transactional',
-		name: 'kirimEmailTransactional',
+		displayName: 'KirimEmail Send Transactional Email',
+		name: 'kirimEmailSendTransactionalEmail',
 		icon: {
 			light: 'file:assets/logo-bg-white.svg',
 			dark: 'file:assets/logo-bg-black.svg',
@@ -94,7 +94,7 @@ export class KirimEmailTransactional implements INodeType {
 				type: 'string',
 				required: true,
 				default: '',
-				placeholder: 'recipient@example.com',
+				placeholder: 'recipient@example.com or ["recipient1@example.com","recipient2@example.com"]',
 				displayOptions: {
 					show: {
 						resource: ['message'],
@@ -102,7 +102,7 @@ export class KirimEmailTransactional implements INodeType {
 					},
 				},
 				description:
-					'Recipient email address(es). Single email or comma-separated for multiple recipients.',
+					'Recipient email address(es). Single email, comma-separated emails, or JSON array string. Maximum 1000 recipients per request.',
 			},
 			{
 				displayName: 'Subject',
@@ -194,20 +194,42 @@ export class KirimEmailTransactional implements INodeType {
 					apiKey: string;
 					apiSecret: string;
 					domain: string;
+					baseUrl: string;
 				};
 
 				const from = this.getNodeParameter('from', itemIndex) as string;
 				const fromName = this.getNodeParameter('fromName', itemIndex) as string;
-				const to = this.getNodeParameter('to', itemIndex) as string;
+				const toInput = this.getNodeParameter('to', itemIndex) as string;
 				const subject = this.getNodeParameter('subject', itemIndex) as string;
 				const text = this.getNodeParameter('text', itemIndex) as string;
 				const html = this.getNodeParameter('html', itemIndex) as string;
 				const replyTo = this.getNodeParameter('replyTo', itemIndex) as string;
 				const headers = this.getNodeParameter('headers', itemIndex) as string;
 
+				let to: string | string[];
+				if (toInput.trim().startsWith('[')) {
+					try {
+						to = JSON.parse(toInput) as string[];
+					} catch {
+						throw new ApplicationError('Invalid JSON array format for To field');
+					}
+				} else if (toInput.includes(',')) {
+					to = toInput.split(',').map((email) => email.trim());
+				} else {
+					to = toInput;
+				}
+
+				if (Array.isArray(to) && to.length > 1000) {
+					throw new ApplicationError('Maximum 1000 recipients per request');
+				}
+
 				const formData = new FormData();
 				formData.append('from', from);
-				formData.append('to', to);
+				if (Array.isArray(to)) {
+					to.forEach((email) => formData.append('to', email));
+				} else {
+					formData.append('to', to);
+				}
 				formData.append('subject', subject);
 				formData.append('text', text);
 
@@ -237,7 +259,7 @@ export class KirimEmailTransactional implements INodeType {
 				// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
 				const response = await this.helpers.httpRequest({
 					method: 'POST',
-					url: 'https://smtp-app.kirim.email/api/v4/transactional/message',
+					url: `${credentials.baseUrl}/api/v4/transactional/message`,
 					headers: {
 						...formData.getHeaders(),
 						Accept: 'application/json',
