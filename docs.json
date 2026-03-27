@@ -1,0 +1,2342 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Kirim.Email SMTP API Documentation",
+        "description": "Kirim.Email SMTP Domain and credential management API Documentation",
+        "contact": {
+            "email": "support@kirim.email"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://smtp-app.kirim.email",
+            "description": "Application server"
+        }
+    ],
+    "paths": {
+        "/api/v4/transactional/credentials": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get credentials for authenticated domain",
+                "description": "Retrieve SMTP credentials for the authenticated domain using domain API key authentication",
+                "operationId": "4834bcb024402029947fb852d056515d",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of credentials per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Indicates if the request was successful",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "description": "Array of credential objects for the authenticated domain with pagination metadata",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Credential"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Create credential for authenticated domain",
+                "description": "Create a new SMTP credential for the authenticated domain using domain API key authentication",
+                "operationId": "e7e586706c6d0d0fc693a94311dd7c41",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "SMTP credential creation details for domain API authentication",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "description": "SMTP username",
+                                        "type": "string",
+                                        "example": "myuser"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "username"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "description": "SMTP username",
+                                        "type": "string",
+                                        "example": "myuser"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Credential created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Indicates if the request was successful",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "description": "Human-readable success message",
+                                            "type": "string",
+                                            "example": "Credential created successfully."
+                                        },
+                                        "data": {
+                                            "description": "Created credential data and metadata",
+                                            "properties": {
+                                                "credential": {
+                                                    "$ref": "#/components/schemas/Credential"
+                                                },
+                                                "password": {
+                                                    "description": "Generated password for the credential. Store this securely as it cannot be retrieved later",
+                                                    "type": "string",
+                                                    "example": "generated-password"
+                                                },
+                                                "remote_synced": {
+                                                    "description": "Whether the credential was successfully synchronized with the remote SMTP server",
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/credentials/{credential}": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get credential details for authenticated domain",
+                "description": "Retrieve details of a specific SMTP credential for the authenticated domain using domain API key authentication",
+                "operationId": "a8c92aa5fa6db40af82a1810e5500e8b",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "credential",
+                        "in": "path",
+                        "description": "Credential GUID (user_smtp_guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "92703823-f3a4-48e2-8e87-7adf25454800"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Indicates if the request was successful",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Credential"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Credential not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Delete credential for authenticated domain",
+                "description": "Delete a specific SMTP credential for the authenticated domain using domain API key authentication",
+                "operationId": "4e03836282dd19344b642cfd08a95fae",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "credential",
+                        "in": "path",
+                        "description": "Credential GUID (user_smtp_guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "92703823-f3a4-48e2-8e87-7adf25454800"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Credential deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Indicates if the request was successful",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "description": "Human-readable success message confirming the deletion",
+                                            "type": "string",
+                                            "example": "Credential deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Credential not found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/credentials/{credential}/reset-password": {
+            "post": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Reset credential password for authenticated domain",
+                "description": "Reset the password for a specific SMTP credential for the authenticated domain using domain API key authentication",
+                "operationId": "026e62f4a9faba094b897d944abe70d3",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "credential",
+                        "in": "path",
+                        "description": "Credential GUID (user_smtp_guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "92703823-f3a4-48e2-8e87-7adf25454800"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Indicates if the request was successful",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "description": "Human-readable success message",
+                                            "type": "string",
+                                            "example": "Password reset successfully."
+                                        },
+                                        "data": {
+                                            "description": "Password reset result data",
+                                            "properties": {
+                                                "credential": {
+                                                    "$ref": "#/components/schemas/Credential"
+                                                },
+                                                "new_password": {
+                                                    "description": "The new generated password. Store this securely as it cannot be retrieved later",
+                                                    "type": "string",
+                                                    "example": "new-generated-password"
+                                                },
+                                                "strength_info": {
+                                                    "description": "Password strength analysis and complexity information",
+                                                    "type": "object"
+                                                },
+                                                "remote_synced": {
+                                                    "description": "Whether the password change was successfully synchronized with the remote SMTP server",
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Credential not found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/log": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get logs for authenticated domain",
+                "description": "Retrieve logs for authenticated domain using domain API key authentication",
+                "operationId": "7ab41179bb72412df0846b73ec85b743",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Filter logs by start date (ISO8601)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-01-01T00:00:00Z"
+                        }
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "Filter logs by end date (ISO8601)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-12-31T23:59:59Z"
+                        }
+                    },
+                    {
+                        "name": "sender",
+                        "in": "query",
+                        "description": "Filter logs by sender email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "sender@example.com"
+                        }
+                    },
+                    {
+                        "name": "recipient",
+                        "in": "query",
+                        "description": "Filter logs by recipient email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "recipient@example.com"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of logs per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1000,
+                            "maximum": 10000,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "minimum": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved email logs for authenticated domain with optional filtering and pagination",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "Array of email log entries for the specified domain",
+                                            "type": "array",
+                                            "items": {
+                                                "description": "Email log entry containing delivery and tracking information",
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Unique identifier for the log entry",
+                                                        "type": "string",
+                                                        "example": "log-id-123"
+                                                    },
+                                                    "user_guid": {
+                                                        "description": "GUID of the user who sent the email",
+                                                        "type": "string",
+                                                        "example": "user-guid-123"
+                                                    },
+                                                    "user_domain_guid": {
+                                                        "description": "GUID of the domain used to send the email",
+                                                        "type": "string",
+                                                        "example": "domain-guid-456"
+                                                    },
+                                                    "event_type": {
+                                                        "description": "Type of email event (sent, delivered, bounced, opened, clicked, etc.)",
+                                                        "type": "string",
+                                                        "example": "delivered"
+                                                    },
+                                                    "message_guid": {
+                                                        "description": "Unique identifier for the email message",
+                                                        "type": "string",
+                                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                                    },
+                                                    "timestamp": {
+                                                        "description": "Unix timestamp when the event occurred",
+                                                        "type": "integer",
+                                                        "example": 1640995200
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "count": {
+                                            "description": "Number of log entries returned in this response",
+                                            "type": "integer",
+                                            "example": 100
+                                        },
+                                        "offset": {
+                                            "description": "Number of entries skipped from the beginning",
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "limit": {
+                                            "description": "Maximum number of entries requested per page",
+                                            "type": "integer",
+                                            "example": 1000
+                                        },
+                                        "pagination": {
+                                            "description": "Pagination metadata for the log entries",
+                                            "properties": {
+                                                "total": {
+                                                    "description": "Total number of log entries available",
+                                                    "type": "integer",
+                                                    "example": 500
+                                                },
+                                                "per_page": {
+                                                    "description": "Number of entries per page",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "current_page": {
+                                                    "description": "Current page number",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "description": "Last available page number",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/log/{message_guid}": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get logs for specific message in authenticated domain",
+                "description": "Retrieve all logs for a specific message in authenticated domain using domain API key authentication",
+                "operationId": "63ade3a647f7b06c06785ec1bee69ddd",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "message_guid",
+                        "in": "path",
+                        "description": "Message GUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "Array of log entries for the specific message",
+                                            "type": "array",
+                                            "items": {
+                                                "description": "Email log entry for the specific message",
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Unique identifier for the log entry",
+                                                        "type": "string",
+                                                        "example": "log-id-123"
+                                                    },
+                                                    "user_guid": {
+                                                        "description": "GUID of the user who sent the email",
+                                                        "type": "string",
+                                                        "example": "user-guid-123"
+                                                    },
+                                                    "user_domain_guid": {
+                                                        "description": "GUID of the domain used to send the email",
+                                                        "type": "string",
+                                                        "example": "domain-guid-456"
+                                                    },
+                                                    "event_type": {
+                                                        "description": "Type of email event (sent, delivered, bounced, opened, clicked, etc.)",
+                                                        "type": "string",
+                                                        "example": "delivered"
+                                                    },
+                                                    "message_guid": {
+                                                        "description": "Unique identifier for the email message",
+                                                        "type": "string",
+                                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                                    },
+                                                    "timestamp": {
+                                                        "description": "Unix timestamp when the event occurred",
+                                                        "type": "integer",
+                                                        "example": 1640995200
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Domain or log not found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/log/stream": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Stream logs for authenticated domain in real-time",
+                "description": "Stream email logs in real-time using Server-Sent Events for authenticated domain",
+                "operationId": "2aa3def16070bcdb07ebbdc29248e554",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Filter logs by start date (ISO8601)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-01-01T00:00:00Z"
+                        }
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "Filter logs by end date (ISO8601)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-12-31T23:59:59Z"
+                        }
+                    },
+                    {
+                        "name": "sender",
+                        "in": "query",
+                        "description": "Filter logs by sender email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "sender@example.com"
+                        }
+                    },
+                    {
+                        "name": "recipient",
+                        "in": "query",
+                        "description": "Filter logs by recipient email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "recipient@example.com"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of logs to stream",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 50000,
+                            "maximum": 500000,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server-Sent Events stream",
+                        "content": {
+                            "text/event-stream": {
+                                "schema": {
+                                    "description": "SSE stream with log data batches and completion events",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/message": {
+            "post": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Send transactional email via domain API key with optional attachments",
+                "description": "Send a transactional email using domain API key authentication. This endpoint supports bulk sending to multiple recipients, file attachments with advanced processing options, and comprehensive email customization. The email processing is handled asynchronously via job queues for optimal performance.",
+                "operationId": "31d57e9fcff06630c57893a0a00b5e5d",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the 'from' email address domain.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Email content and configuration. Supports both single recipient and bulk sending.",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "from",
+                                    "to",
+                                    "subject",
+                                    "text"
+                                ],
+                                "properties": {
+                                    "from": {
+                                        "description": "Sender email address. Must belong to the authenticated domain. Used for envelope sender and Return-Path header.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "sender@example.com"
+                                    },
+                                    "from_name": {
+                                        "description": "Optional sender display name. If not provided, will use the email address only.",
+                                        "type": "string",
+                                        "example": "Company Name"
+                                    },
+                                    "to": {
+                                        "description": "Recipient email address(es). Single email string or array of emails for bulk sending. Maximum 1000 recipients per request.",
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "recipient@example.com"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                },
+                                                "example": [
+                                                    "recipient1@example.com",
+                                                    "recipient2@example.com",
+                                                    "recipient3@example.com"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "subject": {
+                                        "description": "Email subject line. Supports Unicode characters and emojis.",
+                                        "type": "string",
+                                        "example": "Important Account Update"
+                                    },
+                                    "text": {
+                                        "description": "Required plain text content for the email body. This will be used as fallback for email clients that don't support HTML. Line breaks will be preserved.",
+                                        "type": "string",
+                                        "example": "Dear Customer,\\n\\nWe are writing to inform you about an important update to your account.\\n\\nBest regards,\\nThe Team"
+                                    },
+                                    "html": {
+                                        "description": "Optional HTML content for the email body. If provided, this will be used for HTML email clients. Should be a complete HTML document or HTML fragment.",
+                                        "type": "string",
+                                        "example": "<html><body><h2>Important Account Update</h2><p>Dear Customer,</p><p>We are writing to inform you about an important update to your account.</p><p>Best regards,<br>The Team</p></body></html>"
+                                    },
+                                    "headers": {
+                                        "description": "Optional custom email headers. Can be provided as an object or JSON string. Common use cases include tracking headers, priority settings, and unsubscribe links.",
+                                        "oneOf": [
+                                            {
+                                                "type": "object",
+                                                "example": {
+                                                    "X-Campaign-ID": "welcome-series",
+                                                    "X-Priority": "1",
+                                                    "List-Unsubscribe": "mailto:unsubscribe@example.com"
+                                                }
+                                            },
+                                            {
+                                                "type": "string",
+                                                "example": "{\"X-Campaign-ID\": \"welcome-series\", \"X-Priority\": \"1\"}"
+                                            }
+                                        ]
+                                    },
+                                    "reply_to": {
+                                        "description": "Reply-to email address. Must share the same top-level domain as the 'from' address for security compliance.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "support@example.com"
+                                    },
+                                    "attachments": {
+                                        "description": "File attachment(s). Supports single file or array of files. Maximum 10 files per email, 20MB per file, 25MB total payload. Supported formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, CSV, JPG, JPEG, PNG, GIF, WEBP, ZIP, RAR, 7Z.",
+                                        "oneOf": [
+                                            {
+                                                "description": "Single file attachment",
+                                                "type": "string",
+                                                "format": "binary"
+                                            },
+                                            {
+                                                "description": "Multiple file attachments",
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "maxItems": 10
+                                            }
+                                        ]
+                                    },
+                                    "attachment_options": {
+                                        "description": "JSON string with advanced attachment processing options. Available options: compression, password protection, and PDF watermarking.",
+                                        "type": "string",
+                                        "example": "{\"compress\": true, \"password\": \"secret123\", \"watermark\": {\"enabled\": true, \"text\": \"CONFIDENTIAL\", \"position\": \"center\"}}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Email send jobs successfully dispatched for asynchronous processing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "Request success status",
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "description": "Detailed success message with recipient and job count information",
+                                            "type": "string",
+                                            "example": "Email send jobs dispatched for 3 recipients in 1 job(s) with 2 attachment(s)"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid request format or missing authentication",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Domain data missing"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid API key"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Domain access denied or insufficient permissions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Access denied for this domain"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Domain not found or not configured",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Domain not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error - Invalid input data or business rule violation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Validation failed."
+                                                },
+                                                "errors": {
+                                                    "properties": {
+                                                        "from": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": [
+                                                                "The from address domain must match the authenticated domain."
+                                                            ]
+                                                        },
+                                                        "to": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": [
+                                                                "The to field must be a valid email address."
+                                                            ]
+                                                        },
+                                                        "attachments": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": [
+                                                                "Total payload too large"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "error": {
+                                                    "type": "string",
+                                                    "example": "File size exceeds maximum allowed size of 20.00 MB"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "error": {
+                                                    "type": "string",
+                                                    "example": "No SMTP credentials configured for this domain"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected system error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while sending the message. Please try again."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/message/template": {
+            "post": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Send transactional email using pre-defined template with variable replacement",
+                "description": "Send emails using templates created in the platform. Supports variable replacement using {{variable}} syntax in both subject and content. Template must belong to the authenticated domain. Supports attachments with the same processing options as non-template message endpoint.",
+                "operationId": "5860c64ba7255297a38bc07586cad8ed",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match the domain associated with the provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "template_guid",
+                                    "to"
+                                ],
+                                "properties": {
+                                    "template_guid": {
+                                        "description": "UUID of the template to use",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                    },
+                                    "to": {
+                                        "description": "Recipient email address(es). Single email string or array of emails for bulk sending. Maximum 1000 recipients per request.",
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "recipient@example.com"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                },
+                                                "example": [
+                                                    "recipient1@example.com",
+                                                    "recipient2@example.com"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "from": {
+                                        "description": "Sender email address. Must belong to the authenticated domain. Defaults to noreply@{domain} if not provided.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "sender@example.com"
+                                    },
+                                    "from_name": {
+                                        "description": "Optional sender display name. If not provided, will use the email address only.",
+                                        "type": "string",
+                                        "example": "Company Name"
+                                    },
+                                    "variables": {
+                                        "description": "Variables for template replacement using {{variable}} syntax. Can be single object for all recipients or array matching recipient count",
+                                        "oneOf": [
+                                            {
+                                                "description": "Single set of variables for all recipients",
+                                                "type": "object",
+                                                "example": {
+                                                    "name": "John Doe",
+                                                    "product": "Premium Widget"
+                                                }
+                                            },
+                                            {
+                                                "description": "Array of variable objects, one per recipient",
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object"
+                                                },
+                                                "example": [
+                                                    {
+                                                        "name": "John",
+                                                        "product": "Widget A"
+                                                    },
+                                                    {
+                                                        "name": "Jane",
+                                                        "product": "Widget B"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "headers": {
+                                        "description": "Optional custom email headers. Can be provided as an object or JSON string. Common use cases include tracking headers, priority settings, and unsubscribe links.",
+                                        "oneOf": [
+                                            {
+                                                "type": "object",
+                                                "example": {
+                                                    "X-Campaign-ID": "welcome-series"
+                                                }
+                                            },
+                                            {
+                                                "type": "string",
+                                                "example": "{\"X-Campaign-ID\": \"welcome-series\"}"
+                                            }
+                                        ]
+                                    },
+                                    "reply_to": {
+                                        "description": "Reply-to email address. Must share the same top-level domain as the 'from' address for security compliance.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "support@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "template_guid",
+                                    "to"
+                                ],
+                                "properties": {
+                                    "template_guid": {
+                                        "description": "UUID of the template to use",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                    },
+                                    "to": {
+                                        "description": "Recipient email address(es). Single email string or array of emails for bulk sending. Maximum 1000 recipients per request.",
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "recipient@example.com"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                },
+                                                "example": [
+                                                    "recipient1@example.com",
+                                                    "recipient2@example.com"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "from": {
+                                        "description": "Sender email address. Must belong to the authenticated domain. Defaults to noreply@{domain} if not provided.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "sender@example.com"
+                                    },
+                                    "from_name": {
+                                        "description": "Optional sender display name. If not provided, will use the email address only.",
+                                        "type": "string",
+                                        "example": "Company Name"
+                                    },
+                                    "variables": {
+                                        "description": "JSON string of variables for template replacement. Can be single object for all recipients or array matching recipient count",
+                                        "type": "string",
+                                        "example": "{\"name\": \"John Doe\", \"product\": \"Premium Widget\"}"
+                                    },
+                                    "headers": {
+                                        "description": "JSON string with custom email headers. Common use cases include tracking headers, priority settings, and unsubscribe links.",
+                                        "type": "string",
+                                        "example": "{\"X-Campaign-ID\": \"welcome-series\"}"
+                                    },
+                                    "reply_to": {
+                                        "description": "Reply-to email address. Must share the same top-level domain as the 'from' address for security compliance.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "support@example.com"
+                                    },
+                                    "attachments": {
+                                        "description": "File attachment(s). Single file or array of files. Maximum 10 files per email, 20MB per file, 25MB total payload. Supports documents, images, and archives with optional processing.",
+                                        "oneOf": [
+                                            {
+                                                "description": "Single file attachment",
+                                                "type": "string",
+                                                "format": "binary"
+                                            },
+                                            {
+                                                "description": "Multiple file attachments",
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "maxItems": 10
+                                            }
+                                        ]
+                                    },
+                                    "attachment_options": {
+                                        "description": "JSON string with attachment processing options. Watermark text is limited to 50 characters.",
+                                        "type": "string",
+                                        "example": "{\"compress\": true, \"password\": \"secret123\", \"watermark\": {\"enabled\": true, \"text\": \"CONFIDENTIAL\"}}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Template-based email jobs dispatched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Template-based email jobs dispatched for 2 recipients in 1 job(s)"
+                                        },
+                                        "template_guid": {
+                                            "type": "string",
+                                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                                        },
+                                        "template_name": {
+                                            "type": "string",
+                                            "example": "Welcome Email"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Template not found or not owned by domain"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/suppressions": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get suppressions for authenticated domain",
+                "description": "Retrieve suppressions for authenticated domain using domain API key authentication",
+                "operationId": "949ba7e9f27c26836b644a5298a0edc4",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Suppression type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "unsubscribe",
+                            "enum": [
+                                "unsubscribe",
+                                "bounce",
+                                "whitelist"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search suppressions by recipient",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Suppression"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object"
+                                        },
+                                        "filters": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/suppressions/unsubscribes": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get unsubscribe suppressions for authenticated domain",
+                "description": "Retrieve unsubscribe suppressions for authenticated domain using domain API key authentication",
+                "operationId": "27f6e6e71ade827013874ed7f0e8e980",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search suppressions by recipient",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Suppression"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object"
+                                        },
+                                        "filters": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Delete unsubscribe suppressions for authenticated domain",
+                "description": "Remove unsubscribe suppressions by IDs for authenticated domain using domain API key authentication",
+                "operationId": "84135e75ad6cff76606aaa21b497073b",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "description": "Array of suppression IDs to delete",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Suppressions deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Suppressions deleted successfully."
+                                        },
+                                        "deleted_count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/suppressions/bounces": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get bounce suppressions for authenticated domain",
+                "description": "Retrieve bounce suppressions for authenticated domain using domain API key authentication",
+                "operationId": "844951660cd9ba4614f9aaffd3b5c9ef",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search suppressions by recipient",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Suppression"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object"
+                                        },
+                                        "filters": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Delete bounce suppressions for authenticated domain",
+                "description": "Remove bounce suppressions by IDs for authenticated domain using domain API key authentication",
+                "operationId": "f4fe9aef9bf585b9e921cd1e544a2bb7",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "description": "Array of suppression IDs to delete",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Suppressions deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Suppressions deleted successfully."
+                                        },
+                                        "deleted_count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v4/transactional/suppressions/whitelist": {
+            "get": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Get whitelist suppressions for authenticated domain",
+                "description": "Retrieve whitelist suppressions for authenticated domain using domain API key authentication",
+                "operationId": "16e5cb02af04dc4cefccef3e2bb28b24",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search suppressions by recipient",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Suppression"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object"
+                                        },
+                                        "filters": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Create whitelist suppression for authenticated domain",
+                "description": "Add a new entry to whitelist suppressions for authenticated domain using domain API key authentication",
+                "operationId": "612e8a5f888ee53d798815ed7bb55125",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Whitelist suppression entry details for domain API authentication",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "recipient",
+                                    "recipient_type"
+                                ],
+                                "properties": {
+                                    "recipient": {
+                                        "description": "Email or domain to whitelist",
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "recipient_type": {
+                                        "description": "Type of recipient",
+                                        "type": "string",
+                                        "enum": [
+                                            "email",
+                                            "domain"
+                                        ],
+                                        "example": "email"
+                                    },
+                                    "description": {
+                                        "description": "Optional description",
+                                        "type": "string",
+                                        "example": "Trusted sender"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "recipient",
+                                    "recipient_type"
+                                ],
+                                "properties": {
+                                    "recipient": {
+                                        "description": "Email or domain to whitelist",
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "recipient_type": {
+                                        "description": "Type of recipient",
+                                        "type": "string",
+                                        "enum": [
+                                            "email",
+                                            "domain"
+                                        ],
+                                        "example": "email"
+                                    },
+                                    "description": {
+                                        "description": "Optional description",
+                                        "type": "string",
+                                        "example": "Trusted sender"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Whitelist entry created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Whitelist entry created successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Suppression"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Domain not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Transactional Email"
+                ],
+                "summary": "Delete whitelist suppressions for authenticated domain",
+                "description": "Remove whitelist suppressions by IDs for authenticated domain using domain API key authentication",
+                "operationId": "8ada9e020b0fca0e4d9ee622c674498b",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "in": "header",
+                        "description": "Domain name for API key authentication. Must match to domain associated with provided API key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "example.com"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "description": "Array of suppression IDs to delete",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Suppressions deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Suppressions deleted successfully."
+                                        },
+                                        "deleted_count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "domainAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Credential": {
+                "description": "SMTP credential object containing authentication details for email sending",
+                "properties": {
+                    "id": {
+                        "description": "Database auto-increment ID (internal use only)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_smtp_guid": {
+                        "description": "Unique credential GUID used for API operations",
+                        "type": "string",
+                        "example": "92703823-f3a4-48e2-8e87-7adf25454800"
+                    },
+                    "username": {
+                        "description": "SMTP username for authentication. Must be unique within the domain",
+                        "type": "string",
+                        "example": "myuser"
+                    },
+                    "created_at": {
+                        "description": "Unix timestamp when the credential was created",
+                        "type": "integer",
+                        "example": 1640995200
+                    },
+                    "modified_at": {
+                        "description": "Unix timestamp when the credential was last modified",
+                        "type": "integer",
+                        "example": 1640995200
+                    }
+                },
+                "type": "object"
+            },
+            "Suppression": {
+                "description": "Suppression entry",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "unsubscribe",
+                            "bounce",
+                            "whitelist"
+                        ],
+                        "example": "unsubscribe"
+                    },
+                    "recipient_type": {
+                        "type": "string",
+                        "enum": [
+                            "email",
+                            "domain"
+                        ],
+                        "example": "email"
+                    },
+                    "recipient": {
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "tags": {
+                        "type": "string",
+                        "example": "marketing",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Opted out from newsletter",
+                        "nullable": true
+                    },
+                    "source": {
+                        "type": "string",
+                        "example": "api",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "integer",
+                        "example": 1711234567
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "domainAuth": {
+                "type": "http",
+                "description": "Domain API Key Authentication - Basic auth with API key:secret from domain configuration, requires 'domain' header",
+                "scheme": "basic"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Transactional Email",
+            "description": "Transactional email sending and logging endpoints"
+        }
+    ]
+}
