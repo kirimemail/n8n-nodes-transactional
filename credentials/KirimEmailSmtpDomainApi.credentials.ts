@@ -5,7 +5,7 @@ import type {
 	ICredentialTestRequest,
 } from 'n8n-workflow';
 
-export class KirimEmailApi implements ICredentialType {
+export class KirimEmailSmtpDomainApi implements ICredentialType {
 	name = 'kirimEmailSmtpDomainApi';
 	displayName = 'KirimEmail SMTP Domain API';
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

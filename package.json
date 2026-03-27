@@ -1,6 +1,6 @@
 {
 	"name": "@kirimemail/n8n-nodes-transactional",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Kirim.Email transactional email nodes for n8n - send emails and receive webhooks",
 	"license": "MIT",
 	"homepage": "https://kirim.email",
@@ -40,11 +40,11 @@
 		"n8nNodesApiVersion": 1,
 		"strict": true,
 		"credentials": [
-			"dist/credentials/KirimEmailApi.credentials.js"
+			"dist/credentials/KirimEmailSmtpDomainApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/KirimEmailTransactional/KirimEmailTransactional.node.js",
-			"dist/nodes/KirimEmailTrigger/KirimEmailTrigger.node.js"
+			"dist/nodes/KirimEmailSendTransactionalEmail/KirimEmailSendTransactionalEmail.node.js",
+			"dist/nodes/KirimEmailSmtpWebhookTrigger/KirimEmailSmtpWebhookTrigger.node.js"
 		]
 	},
 	"devDependencies": {
