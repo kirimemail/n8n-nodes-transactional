@@ -8,7 +8,7 @@ import type {
 import { NodeConnectionTypes, NodeApiError } from 'n8n-workflow';
 import { createHmac } from 'crypto';
 
-export class KirimEmailTrigger implements INodeType {
+export class KirimEmailSmtpWebhookTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'KirimEmail SMTP Webhook Trigger',
 		name: 'kirimEmailSmtpWebhookTrigger',
