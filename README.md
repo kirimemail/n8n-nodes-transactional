@@ -1,46 +1,82 @@
 # @kirimemail/n8n-nodes-transactional
 
-This is an n8n community node. It lets you use _app/service name_ in your n8n workflows.
-
-_App/service name_ is _one or two sentences describing the service this node integrates with_.
+Kirim.Email transactional email nodes for n8n - send transactional emails and receive webhook events.
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/sustainable-use-license/) workflow automation platform.
-
-[Installation](#installation)
-[Operations](#operations)
-[Credentials](#credentials)
-[Compatibility](#compatibility)
-[Usage](#usage)
-[Resources](#resources)
-[Version history](#version-history)
 
 ## Installation
 
 Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## Operations
+## Nodes
 
-_List the operations supported by your node._
+### KirimEmail Transactional
+
+Send transactional emails via Kirim.Email API.
+
+**Operations:**
+
+- Send email
+
+**Fields:**
+
+- From - Sender email address
+- From Name - Optional sender display name
+- To - Recipient email address(es)
+- Subject - Email subject
+- Text Body - Plain text content
+- HTML Body - Optional HTML content
+- Reply To - Optional reply-to address
+- Headers - Custom headers as JSON
+
+### KirimEmail Trigger
+
+Receive webhook events from Kirim.Email.
+
+**Events:**
+
+- Email queued, sent, delivered, bounced, etc.
+- Automatic signature verification
 
 ## Credentials
 
-_If users need to authenticate with the app/service, provide details here. You should include prerequisites (such as signing up with the service), available authentication methods, and how to set them up._
+You'll need a Kirim.Email API key and secret. Get them from your Kirim.Email dashboard under Domain Settings > API Keys.
+
+**Required fields:**
+
+- API Key - Your API key (username for Basic Auth)
+- API Secret - Your API secret (password for Basic Auth)
+- Domain - Your verified domain name
 
 ## Compatibility
 
-_State the minimum n8n version, as well as which versions you test against. You can also include any known version incompatibility issues._
+- Tested with n8n v1.x and v2.x
+- Requires Kirim.Email account with domain verification
 
 ## Usage
 
-_This is an optional section. Use it to help users with any difficult or confusing aspects of the node._
+### Sending an Email
 
-_By the time users are looking for community nodes, they probably already know n8n basics. But if you expect new users, you can link to the [Try it out](https://docs.n8n.io/try-it-out/) documentation to help them get started._
+1. Add the **KirimEmail Transactional** node to your workflow
+2. Create/select Kirim.Email API credentials
+3. Configure the email fields (from, to, subject, text)
+4. Execute the node
+
+### Receiving Webhooks
+
+1. Add the **KirimEmail Trigger** node to your workflow
+2. Create/select Kirim.Email API credentials
+3. Activate the workflow
+4. Configure Kirim.Email to send webhooks to your workflow URL
+
+The webhook URL format: `https://your-n8n-instance/webhook/kirim-email`
 
 ## Resources
 
-* [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
-* _Link to app/service documentation._
+- [Kirim.Email Documentation](https://smtp-app.kirim.email/docs)
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [Building n8n Community Nodes](https://docs.n8n.io/integrations/community-nodes/build/)
 
-## Version history
+## License
 
-_This is another optional section. If your node has multiple versions, include a short description of available versions and what changed, as well as any compatibility impact._
+MIT

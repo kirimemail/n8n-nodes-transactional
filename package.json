@@ -1,32 +1,37 @@
 {
 	"name": "@kirimemail/n8n-nodes-transactional",
 	"version": "0.1.0",
-	"description": "Kirim.Email transactional email nodes for n8n",
+	"description": "Kirim.Email transactional email nodes for n8n - send emails and receive webhooks",
 	"license": "MIT",
 	"homepage": "https://smtp-app.kirim.email",
 	"keywords": [
 		"n8n-community-node-package",
 		"kirimemail",
 		"transactional",
-		"email"
+		"email",
+		"smtp",
+		"webhook"
 	],
 	"author": {
 		"name": "Gamal Abdul Nasser",
-		"email": "hi@gamalan.id"
+		"email": "gamalan@kirim.email"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/kirimemail/n8n-nodes-transactional.git"
 	},
+	"bugs": {
+		"url": "https://github.com/kirimemail/n8n-nodes-transactional/issues"
+	},
 	"scripts": {
 		"build": "n8n-node build && npm run copy-assets",
-		"copy-assets": "cp -r assets dist/nodes/KirimEmailTransactional/ && cp -r assets dist/nodes/KirimEmailTrigger/",
+		"copy-assets": "cp -r assets dist/nodes/KirimEmailTransactional/ && cp -r assets dist/nodes/KirimEmailTrigger/ && cp -r assets dist/credentials/",
 		"build:watch": "tsc --watch",
 		"dev": "n8n-node dev",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release",
-		"prepublishOnly": "n8n-node prerelease"
+		"prepublishOnly": "npm run build && npm run copy-assets"
 	},
 	"files": [
 		"dist"
