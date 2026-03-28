@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0 (2025-03-28)
+
+### Features
+
+- Added KirimEmail Domain Log node - retrieve email logs for authenticated domain
+- Support for paginated log retrieval with limit option
+- Simplified output option for essential log fields
+
+### Nodes
+
+- KirimEmail Domain Log - Get logs via GET /api/v4/transactional/log
+
 ## 0.5.0 (2025-03-28)
 
 ### Features

@@ -46,6 +46,19 @@ Receive webhook events from Kirim.Email.
 - Email queued, sent, delivered, bounced, etc.
 - Automatic signature verification
 
+### KirimEmail Domain Log
+
+Get email logs for authenticated domain via Kirim.Email API.
+
+**Operations:**
+
+- Get Many - Retrieve email logs with pagination support
+
+**Features:**
+
+- Return all or limited results
+- Simplified output option for essential fields only
+
 ## Credentials
 
 You'll need a Kirim.Email API key and secret. Get them from your Kirim.Email dashboard under Domain Settings > API Keys.
