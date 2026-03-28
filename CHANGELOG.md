@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.1 (2025-03-29)
+
+### Features
+
+- Added event type filter to KirimEmail Domain Log node
+- Added tags filter to KirimEmail Domain Log node
+
 ## 0.6.0 (2025-03-28)
 
 ### Features

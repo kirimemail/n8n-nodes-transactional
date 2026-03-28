@@ -176,6 +176,46 @@ export class KirimEmailDomainLog implements INodeType {
 				},
 				description: 'Whether to return simplified output with essential fields only',
 			},
+			{
+				displayName: 'Event Type',
+				name: 'eventType',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{ name: 'All', value: '' },
+					{ name: 'Bounced', value: 'bounced' },
+					{ name: 'Clicked', value: 'clicked' },
+					{ name: 'Deferred', value: 'deferred' },
+					{ name: 'Delivered', value: 'delivered' },
+					{ name: 'Failed', value: 'failed' },
+					{ name: 'Opened', value: 'opened' },
+					{ name: 'Permanent Fail', value: 'permanent_fail' },
+					{ name: 'Queued', value: 'queued' },
+					{ name: 'Temporary Fail', value: 'temporary_fail' },
+					{ name: 'Unsubscribed', value: 'unsubscribed' },
+				],
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['log'],
+						operation: ['getAll'],
+					},
+				},
+				description: 'Filter logs by event type',
+			},
+			{
+				displayName: 'Tags',
+				name: 'tags',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						resource: ['log'],
+						operation: ['getAll'],
+					},
+				},
+				description: 'Filter logs by tags (partial match)',
+			},
 		],
 	};
 
@@ -198,12 +238,23 @@ export class KirimEmailDomainLog implements INodeType {
 				const returnAll = this.getNodeParameter('returnAll', itemIndex) as boolean;
 				const limit = this.getNodeParameter('limit', itemIndex) as number;
 				const simplifyOutput = this.getNodeParameter('simplifyOutput', itemIndex) as boolean;
+				const eventType = this.getNodeParameter('eventType', itemIndex) as string;
+				const tags = this.getNodeParameter('tags', itemIndex) as string;
 
-				let url = `${credentials.baseUrl}/api/v4/transactional/log`;
+				const queryParams = new URLSearchParams();
 
 				if (!returnAll) {
-					url += `?per_page=${limit}`;
+					queryParams.set('per_page', limit.toString());
 				}
+				if (eventType) {
+					queryParams.set('event_type', eventType);
+				}
+				if (tags) {
+					queryParams.set('tags', tags);
+				}
+
+				const queryString = queryParams.toString();
+				const url = `${credentials.baseUrl}/api/v4/transactional/log${queryString ? `?${queryString}` : ''}`;
 
 				let response: LogsResponse;
 

@@ -56,6 +56,8 @@ Get email logs for authenticated domain via Kirim.Email API.
 
 **Features:**
 
+- Filter by event type (queued, delivered, bounced, failed, opened, clicked, unsubscribed, etc.)
+- Filter by tags
 - Return all or limited results
 - Simplified output option for essential fields only
 

@@ -594,6 +594,26 @@
                         }
                     },
                     {
+                        "name": "event_type",
+                        "in": "query",
+                        "description": "Filter logs by event type (queued, delivered, bounced, failed, opened, clicked, unsubscribed, temporary_fail, permanent_fail, deferred)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "delivered"
+                        }
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Filter logs by tags (partial match)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "newsletter"
+                        }
+                    },
+                    {
                         "name": "limit",
                         "in": "query",
                         "description": "Number of logs per page",
@@ -918,6 +938,26 @@
                         }
                     },
                     {
+                        "name": "event_type",
+                        "in": "query",
+                        "description": "Filter logs by event type (queued, delivered, bounced, failed, opened, clicked, unsubscribed, temporary_fail, permanent_fail, deferred)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "delivered"
+                        }
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Filter logs by tags (partial match)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "newsletter"
+                        }
+                    },
+                    {
                         "name": "limit",
                         "in": "query",
                         "description": "Maximum number of logs to stream",
@@ -1051,19 +1091,20 @@
                                         "example": "<html><body><h2>Important Account Update</h2><p>Dear Customer,</p><p>We are writing to inform you about an important update to your account.</p><p>Best regards,<br>The Team</p></body></html>"
                                     },
                                     "headers": {
-                                        "description": "Optional custom email headers. Can be provided as an object or JSON string. Common use cases include tracking headers, priority settings, and unsubscribe links.",
+                                        "description": "Optional custom email headers. Can be provided as an object or JSON string. Common use cases include tracking headers, priority settings, X-Tags for log filtering, and unsubscribe links.",
                                         "oneOf": [
                                             {
                                                 "type": "object",
                                                 "example": {
                                                     "X-Campaign-ID": "welcome-series",
                                                     "X-Priority": "1",
+                                                    "X-Tags": "newsletter,promo",
                                                     "List-Unsubscribe": "mailto:unsubscribe@example.com"
                                                 }
                                             },
                                             {
                                                 "type": "string",
-                                                "example": "{\"X-Campaign-ID\": \"welcome-series\", \"X-Priority\": \"1\"}"
+                                                "example": "{\"X-Campaign-ID\": \"welcome-series\", \"X-Priority\": \"1\", \"X-Tags\": \"newsletter,promo\"}"
                                             }
                                         ]
                                     },
