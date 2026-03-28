@@ -1,6 +1,6 @@
 {
 	"name": "@kirimemail/n8n-nodes-transactional",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Kirim.Email transactional email nodes for n8n - send emails and receive webhooks",
 	"license": "MIT",
 	"homepage": "https://kirim.email",
@@ -31,7 +31,8 @@
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release",
-		"prepublishOnly": "npm run build && npm run copy-assets"
+		"prepublishOnly": "npm run build && npm run copy-assets",
+		"test": "echo \"No tests yet\" && exit 0"
 	},
 	"files": [
 		"dist"
