@@ -5,8 +5,6 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionTypes, ApplicationError } from 'n8n-workflow';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import FormData = require('form-data');
 
 export class KirimEmailSendTransactionalEmail implements INodeType {
 	description: INodeTypeDescription = {
@@ -190,7 +188,7 @@ export class KirimEmailSendTransactionalEmail implements INodeType {
 			const operation = this.getNodeParameter('operation', itemIndex) as string;
 
 			if (resource === 'message' && operation === 'send') {
-				const credentials = (await this.getCredentials('kirimEmailApi')) as {
+				const credentials = (await this.getCredentials('kirimEmailSmtpDomainApi')) as {
 					apiKey: string;
 					apiSecret: string;
 					domain: string;
@@ -223,54 +221,52 @@ export class KirimEmailSendTransactionalEmail implements INodeType {
 					throw new ApplicationError('Maximum 1000 recipients per request');
 				}
 
-				const formData = new FormData();
-				formData.append('from', from);
+				const formData: Record<string, string | string[]> = {
+					from,
+					subject,
+					text,
+				};
+
 				if (Array.isArray(to)) {
-					to.forEach((email) => formData.append('to', email));
+					formData.to = to;
 				} else {
-					formData.append('to', to);
+					formData.to = to;
 				}
-				formData.append('subject', subject);
-				formData.append('text', text);
 
 				if (fromName) {
-					formData.append('from_name', fromName);
+					formData.from_name = fromName;
 				}
 
 				if (html) {
-					formData.append('html', html);
+					formData.html = html;
 				}
 
 				if (replyTo) {
-					formData.append('reply_to', replyTo);
+					formData.reply_to = replyTo;
 				}
 
 				if (headers && headers !== '{}') {
 					try {
 						const parsedHeaders = JSON.parse(headers);
 						for (const [key, value] of Object.entries(parsedHeaders)) {
-							formData.append(`headers[${key}]`, String(value));
+							formData[`headers[${key}]`] = String(value);
 						}
 					} catch {
 						throw new ApplicationError('Headers must be a valid JSON object');
 					}
 				}
 
-				// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
-				const response = await this.helpers.httpRequest({
-					method: 'POST',
-					url: `${credentials.baseUrl}/api/v4/transactional/message`,
-					headers: {
-						...formData.getHeaders(),
-						Accept: 'application/json',
-						domain: credentials.domain,
-					},
-					auth: {
-						username: credentials.apiKey,
-						password: credentials.apiSecret,
-					},
-					body: formData,
-				});
+				const response = await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					'kirimEmailSmtpDomainApi',
+					{
+						method: 'POST',
+						url: `${credentials.baseUrl}/api/v4/transactional/message`,
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						formData: formData as any,
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					} as any,
+				);
 
 				returnData.push({ json: response });
 			}
