@@ -18,6 +18,14 @@ Send transactional emails via Kirim.Email API.
 
 - Send email
 
+**Features:**
+
+- Support for single and bulk email sending (up to 1000 recipients)
+- Custom email headers
+- HTML and plain text body support
+- Reply-to address customization
+- Comprehensive error handling with detailed error messages
+
 **Fields:**
 
 - From - Sender email address

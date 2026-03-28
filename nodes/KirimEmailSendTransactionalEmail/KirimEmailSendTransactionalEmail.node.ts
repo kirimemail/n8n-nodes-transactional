@@ -4,7 +4,55 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionTypes, ApplicationError } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeApiError } from 'n8n-workflow';
+
+interface ApiErrorResponse {
+	success?: boolean;
+	message?: string;
+	error?: string;
+	errors?: Record<string, string[]>;
+}
+
+const ERROR_MESSAGES: Record<number, { code: string; description: string }> = {
+	400: { code: 'BAD_REQUEST', description: 'Bad Request' },
+	401: {
+		code: 'UNAUTHORIZED',
+		description: 'Unauthorized - Invalid or missing authentication credentials',
+	},
+	403: {
+		code: 'FORBIDDEN',
+		description: 'Forbidden - You do not have permission to access this resource',
+	},
+	404: { code: 'NOT_FOUND', description: 'Not Found - The requested resource was not found' },
+	422: { code: 'VALIDATION_ERROR', description: 'Validation Error - Invalid input data' },
+	429: {
+		code: 'RATE_LIMIT_EXCEEDED',
+		description: 'Too Many Requests - Rate limit exceeded. Please try again later.',
+	},
+	500: {
+		code: 'SERVER_ERROR',
+		description: 'Internal Server Error - An unexpected error occurred',
+	},
+};
+
+function parseApiError(errorResponse: ApiErrorResponse): string {
+	if (errorResponse.message) {
+		return errorResponse.message;
+	}
+	if (errorResponse.error) {
+		return errorResponse.error;
+	}
+	return 'An unknown error occurred';
+}
+
+function getErrorDetails(statusCode: number): { code: string; description: string } {
+	return (
+		ERROR_MESSAGES[statusCode] || {
+			code: 'UNKNOWN_ERROR',
+			description: 'An unknown error occurred',
+		}
+	);
+}
 
 export class KirimEmailSendTransactionalEmail implements INodeType {
 	description: INodeTypeDescription = {
@@ -209,7 +257,12 @@ export class KirimEmailSendTransactionalEmail implements INodeType {
 					try {
 						to = JSON.parse(toInput) as string[];
 					} catch {
-						throw new ApplicationError('Invalid JSON array format for To field');
+						throw new NodeApiError(this.getNode(), {
+							message: 'Invalid JSON array format for To field',
+							code: 'BAD_REQUEST',
+							httpCode: '400',
+							description: 'To field must be a valid JSON array string',
+						});
 					}
 				} else if (toInput.includes(',')) {
 					to = toInput.split(',').map((email) => email.trim());
@@ -218,7 +271,12 @@ export class KirimEmailSendTransactionalEmail implements INodeType {
 				}
 
 				if (Array.isArray(to) && to.length > 1000) {
-					throw new ApplicationError('Maximum 1000 recipients per request');
+					throw new NodeApiError(this.getNode(), {
+						message: 'Maximum 1000 recipients per request',
+						code: 'BAD_REQUEST',
+						httpCode: '400',
+						description: 'Too many recipients specified',
+					});
 				}
 
 				const formData: Record<string, string | string[]> = {
@@ -252,21 +310,54 @@ export class KirimEmailSendTransactionalEmail implements INodeType {
 							formData[`headers[${key}]`] = String(value);
 						}
 					} catch {
-						throw new ApplicationError('Headers must be a valid JSON object');
+						throw new NodeApiError(this.getNode(), {
+							message: 'Headers must be a valid JSON object',
+							code: 'BAD_REQUEST',
+							httpCode: '400',
+							description: 'Invalid JSON format for headers',
+						});
 					}
 				}
 
-				const response = await this.helpers.httpRequestWithAuthentication.call(
-					this,
-					'kirimEmailSmtpDomainApi',
-					{
-						method: 'POST',
-						url: `${credentials.baseUrl}/api/v4/transactional/message`,
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						formData: formData as any,
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					} as any,
-				);
+				let response: { success?: boolean; message?: string; error?: string };
+
+				try {
+					response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'kirimEmailSmtpDomainApi',
+						{
+							method: 'POST',
+							url: `${credentials.baseUrl}/api/v4/transactional/message`,
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						} as any,
+					);
+				} catch (error) {
+					const httpError = error as {
+						statusCode?: number;
+						response?: { body?: ApiErrorResponse };
+					};
+					const statusCode = httpError.statusCode || 500;
+					const errorResponse = httpError.response?.body as ApiErrorResponse | undefined;
+
+					let errorMessage = (error as Error).message;
+					const errorDetails = getErrorDetails(statusCode);
+
+					if (errorResponse) {
+						errorMessage = parseApiError(errorResponse);
+					}
+
+					throw new NodeApiError(
+						this.getNode(),
+						{
+							message: errorMessage,
+							code: errorDetails.code,
+							httpCode: statusCode.toString(),
+							description: errorDetails.description,
+							retry: statusCode === 429,
+						},
+						{ itemIndex: itemIndex },
+					);
+				}
 
 				returnData.push({ json: response });
 			}

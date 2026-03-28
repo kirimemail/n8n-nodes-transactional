@@ -61,6 +61,20 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -84,10 +98,13 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthCredentialUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthCredentialNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthCredentialTooManyRequests"
                     }
                 },
                 "security": [
@@ -194,13 +211,19 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthCredentialUnauthorized"
                     },
-                    "422": {
-                        "description": "Validation Error"
+                    "403": {
+                        "$ref": "#/components/responses/DomainAuthCredentialForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/DomainAuthCredentialNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthCredentialTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthCredentialServerError"
                     }
                 },
                 "security": [
@@ -244,6 +267,20 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -263,13 +300,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthCredentialUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthCredentialForbidden"
                     },
                     "404": {
-                        "description": "Credential not found"
+                        "$ref": "#/components/responses/DomainAuthCredentialNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthCredentialTooManyRequests"
                     }
                 },
                 "security": [
@@ -311,6 +351,20 @@
                 "responses": {
                     "200": {
                         "description": "Credential deleted successfully",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -332,16 +386,19 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthCredentialUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthCredentialForbidden"
                     },
                     "404": {
-                        "description": "Credential not found"
+                        "$ref": "#/components/responses/DomainAuthCredentialNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthCredentialTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthCredentialServerError"
                     }
                 },
                 "security": [
@@ -385,6 +442,20 @@
                 "responses": {
                     "200": {
                         "description": "Password reset successfully",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -429,16 +500,19 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthCredentialUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthCredentialForbidden"
                     },
                     "404": {
-                        "description": "Credential not found"
+                        "$ref": "#/components/responses/DomainAuthCredentialNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthCredentialTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthCredentialServerError"
                     }
                 },
                 "security": [
@@ -628,19 +702,22 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "$ref": "#/components/responses/DomainAuthLogBadRequest"
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthLogUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthLogForbidden"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthLogNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthLogTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthLogServerError"
                     }
                 },
                 "security": [
@@ -734,19 +811,22 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "$ref": "#/components/responses/DomainAuthLogBadRequest"
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthLogUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthLogForbidden"
                     },
                     "404": {
-                        "description": "Domain or log not found"
+                        "$ref": "#/components/responses/DomainAuthLogNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthLogTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthLogServerError"
                     }
                 },
                 "security": [
@@ -843,19 +923,22 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "$ref": "#/components/responses/DomainAuthLogBadRequest"
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthLogUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "$ref": "#/components/responses/DomainAuthLogForbidden"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthLogNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthLogTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthLogServerError"
                     }
                 },
                 "security": [
@@ -923,6 +1006,7 @@
                                                     "type": "string",
                                                     "format": "email"
                                                 },
+                                                "maxItems": 1000,
                                                 "example": [
                                                     "recipient1@example.com",
                                                     "recipient2@example.com",
@@ -1002,6 +1086,20 @@
                 "responses": {
                     "202": {
                         "description": "Email send jobs successfully dispatched for asynchronous processing",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1023,170 +1121,25 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request - Invalid request format or missing authentication",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Domain data missing"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageBadRequest"
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing API key",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Invalid API key"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageUnauthorized"
                     },
                     "403": {
-                        "description": "Forbidden - Domain access denied or insufficient permissions",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Access denied for this domain"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageForbidden"
                     },
                     "404": {
-                        "description": "Domain not found or not configured",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Domain not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageNotFound"
                     },
                     "422": {
-                        "description": "Validation Error - Invalid input data or business rule violation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "properties": {
-                                                "success": {
-                                                    "type": "boolean",
-                                                    "example": false
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "example": "Validation failed."
-                                                },
-                                                "errors": {
-                                                    "properties": {
-                                                        "from": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "string"
-                                                            },
-                                                            "example": [
-                                                                "The from address domain must match the authenticated domain."
-                                                            ]
-                                                        },
-                                                        "to": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "string"
-                                                            },
-                                                            "example": [
-                                                                "The to field must be a valid email address."
-                                                            ]
-                                                        },
-                                                        "attachments": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "string"
-                                                            },
-                                                            "example": [
-                                                                "Total payload too large"
-                                                            ]
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "properties": {
-                                                "error": {
-                                                    "type": "string",
-                                                    "example": "File size exceeds maximum allowed size of 20.00 MB"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "properties": {
-                                                "error": {
-                                                    "type": "string",
-                                                    "example": "No SMTP credentials configured for this domain"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthMessageTooManyRequests"
                     },
                     "500": {
-                        "description": "Internal Server Error - Unexpected system error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An error occurred while sending the message. Please try again."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/DomainAuthMessageServerError"
                     }
                 },
                 "security": [
@@ -1246,6 +1199,7 @@
                                                     "type": "string",
                                                     "format": "email"
                                                 },
+                                                "maxItems": 1000,
                                                 "example": [
                                                     "recipient1@example.com",
                                                     "recipient2@example.com"
@@ -1346,6 +1300,7 @@
                                                     "type": "string",
                                                     "format": "email"
                                                 },
+                                                "maxItems": 1000,
                                                 "example": [
                                                     "recipient1@example.com",
                                                     "recipient2@example.com"
@@ -1413,6 +1368,20 @@
                 "responses": {
                     "202": {
                         "description": "Template-based email jobs dispatched",
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "description": "Maximum requests per minute",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "X-RateLimit-Remaining": {
+                                "description": "Remaining requests in current window",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1439,14 +1408,23 @@
                             }
                         }
                     },
+                    "400": {
+                        "$ref": "#/components/responses/DomainAuthTemplateBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/DomainAuthTemplateUnauthorized"
+                    },
                     "404": {
-                        "description": "Template not found or not owned by domain"
+                        "$ref": "#/components/responses/DomainAuthTemplateNotFound"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "$ref": "#/components/responses/DomainAuthTemplateValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthTemplateTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthTemplateServerError"
                     }
                 },
                 "security": [
@@ -1553,10 +1531,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthSuppressionNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -1648,10 +1632,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthSuppressionNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -1732,13 +1722,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -1830,10 +1823,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthSuppressionNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -1914,13 +1913,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -2012,10 +2014,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthSuppressionNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -2134,16 +2142,19 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "404": {
-                        "description": "Domain not found"
+                        "$ref": "#/components/responses/DomainAuthSuppressionNotFound"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -2224,13 +2235,16 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "$ref": "#/components/responses/DomainAuthSuppressionUnauthorized"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionValidationError"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/DomainAuthSuppressionTooManyRequests"
                     },
                     "500": {
-                        "description": "Server Error"
+                        "$ref": "#/components/responses/DomainAuthSuppressionServerError"
                     }
                 },
                 "security": [
@@ -2323,6 +2337,733 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "responses": {
+            "DomainAuthCredentialBadRequest": {
+                "description": "Bad Request - Domain data missing or invalid",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Domain data missing"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialUnauthorized": {
+                "description": "Unauthorized - Invalid or missing API key authentication",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialForbidden": {
+                "description": "Forbidden - Credential does not belong to the authenticated domain",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Credential does not belong to the authenticated domain"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialNotFound": {
+                "description": "Credential not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Credential not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialValidationError": {
+                "description": "Validation Error - Invalid input data",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation failed."
+                                },
+                                "errors": {
+                                    "description": "Field-specific validation errors",
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialServerError": {
+                "description": "Server Error - Unexpected error occurred",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "An error occurred while processing the request."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthCredentialTooManyRequests": {
+                "description": "Too Many Requests - Rate limit exceeded. Retry after the specified time.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds until rate limit resets",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Limit": {
+                        "description": "Maximum requests per minute",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Remaining": {
+                        "description": "Remaining requests in current window",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Too many attempts. Please try again later."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogBadRequest": {
+                "description": "Bad Request - Domain data missing or invalid",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Domain data missing"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogUnauthorized": {
+                "description": "Unauthorized - Invalid or missing API key authentication",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogForbidden": {
+                "description": "Forbidden - Domain access denied",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Access denied"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogNotFound": {
+                "description": "Not Found - Domain or log not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Domain not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogServerError": {
+                "description": "Server Error - Unexpected error occurred",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Unknown error"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthLogTooManyRequests": {
+                "description": "Too Many Requests - Rate limit exceeded. Retry after the specified time.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds until rate limit resets",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Limit": {
+                        "description": "Maximum requests per minute",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Remaining": {
+                        "description": "Remaining requests in current window",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Too many attempts. Please try again later."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageBadRequest": {
+                "description": "Bad Request - Domain data missing or invalid request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Domain data missing"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageUnauthorized": {
+                "description": "Unauthorized - Invalid or missing API key",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Invalid API key"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageForbidden": {
+                "description": "Forbidden - Domain access denied or insufficient permissions",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Access denied for this domain"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageNotFound": {
+                "description": "Domain not found or not configured",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Domain not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageValidationError": {
+                "description": "Validation Error - Invalid input data or business rule violation",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "": {
+                                    "oneOf": [
+                                        {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Validation failed."
+                                                },
+                                                "errors": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "error": {
+                                                    "type": "string",
+                                                    "example": "File size exceeds maximum allowed size"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageServerError": {
+                "description": "Internal Server Error - Unexpected system error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "An error occurred while sending the message. Please try again."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthMessageTooManyRequests": {
+                "description": "Too Many Requests - Rate limit exceeded. Retry after the specified time.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds until rate limit resets",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Limit": {
+                        "description": "Maximum requests per minute",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Remaining": {
+                        "description": "Remaining requests in current window",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Too many attempts. Please try again later."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateBadRequest": {
+                "description": "Bad Request - Domain data missing or invalid request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Domain data missing"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateUnauthorized": {
+                "description": "Unauthorized - Invalid or missing API key authentication",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateNotFound": {
+                "description": "Not Found - Domain or template not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Template not found or inactive"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateValidationError": {
+                "description": "Validation Error - Invalid input data",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation failed."
+                                },
+                                "errors": {
+                                    "description": "Field-specific validation errors",
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateServerError": {
+                "description": "Server Error - Unexpected error occurred",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "An error occurred while sending the template message. Please try again."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthTemplateTooManyRequests": {
+                "description": "Too Many Requests - Rate limit exceeded. Retry after the specified time.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds until rate limit resets",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Limit": {
+                        "description": "Maximum requests per minute",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Remaining": {
+                        "description": "Remaining requests in current window",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Too many attempts. Please try again later."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionBadRequest": {
+                "description": "Bad Request - Domain data missing or invalid",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Domain data missing"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionUnauthorized": {
+                "description": "Unauthorized - Invalid or missing API key authentication",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionNotFound": {
+                "description": "Not Found - Domain not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Domain not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionValidationError": {
+                "description": "Validation Error - Invalid input data",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation failed."
+                                },
+                                "errors": {
+                                    "description": "Field-specific validation errors",
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionServerError": {
+                "description": "Server Error - Unexpected error occurred",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "An error occurred while processing the request."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "DomainAuthSuppressionTooManyRequests": {
+                "description": "Too Many Requests - Rate limit exceeded. Retry after the specified time.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds until rate limit resets",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Limit": {
+                        "description": "Maximum requests per minute",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "X-RateLimit-Remaining": {
+                        "description": "Remaining requests in current window",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Too many attempts. Please try again later."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
             }
         },
         "securitySchemes": {
